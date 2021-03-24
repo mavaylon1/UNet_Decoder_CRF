@@ -97,7 +97,7 @@ if i==0:
 
 model.load_weights('/home/maavaylon/LBNL_Seg/Weights/unet_vanilla_davis.h5')
 
-model.evaluate_segmentation(inp_images_dir='//home/maavaylon/Unet_Vanilla_Davis_Results', annotations_dir='/home/maavaylon/proximal_lower_contrast_test/ann')
+model.evaluate_segmentation(inp_images_dir='/home/maavaylon/Unet_Vanilla_Davis_Results', annotations_dir='/home/maavaylon/proximal_lower_contrast_test/ann')
 
 
 
