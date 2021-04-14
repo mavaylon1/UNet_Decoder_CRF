@@ -345,17 +345,18 @@ model.summary()
 
 
 model.train(
-    train_images =  "/Users/mavaylon/Research/Data1/train/img/",
-    train_annotations = "/Users/mavaylon/Research/Data1/train/ann/",
+    train_images =  "/home/maavaylon/Data1/train/img/",
+    train_annotations = "/home/maavaylon/Data1/train/ann/",
     epochs=20,
-    steps_per_epoch=len(glob("/Users/mavaylon/Research/Data1/train/img/*")),
+    steps_per_epoch=len(glob("/home/maavaylon/Data1/train/img/*")),
     batch_size=1,
     validate=True,
-    val_images="/Users/mavaylon/Research/Data1/test/img/",
-    val_annotations="/Users/mavaylon/Research/Data1/test/ann/",
+    val_images="/home/maavaylon/Data1/test/img/",
+    val_annotations="/home/maavaylon/Data1/test/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/Users/mavaylon/Research/Data1/test/img/*"))
+    val_steps_per_epoch=len(glob("/home/maavaylon/Data1/test/img/*"))
 )
+
 
 
 # In[ ]:
