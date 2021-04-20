@@ -1,11 +1,11 @@
 from model_utils import *
 from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
-    Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D
+    Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
 
-def resnet50_encoder(input_height,  input_width):
+def resnet50_encoder(**kwargs):
 
-    input_height = kwargs[input_height]
-    input_width = kwargs[input_width]
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0
@@ -50,14 +50,14 @@ def resnet50_encoder(input_height,  input_width):
 
     return img_input, [f1, f2, f3, f4, f5]
 
-def unet_encoder(input_height, input_width, filters, depth, channels, batch_norm_first):
+def unet_encoder(**kwargs):
 
-    input_height = kwargs[input_height]
-    input_width = kwargs[input_width]
-    filters = kwargs[filters]
-    depth = kwargs[depth]
-    channels = kwargs[channels]
-    batch_norm_first = kwargs[batch_norm_first]
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
+    filters = kwargs['filters']
+    depth = kwargs['depth']
+    channels = kwargs['channels']
+    batch_norm_first = kwargs['batch_norm_first']
     pool = True
 
     assert input_height % 32 == 0
@@ -67,17 +67,15 @@ def unet_encoder(input_height, input_width, filters, depth, channels, batch_norm
 
     blocks = []
     for i in range(depth):
-        x = unet_conv_block(x, filters, pool, batch_norm_first)
+        x = unet_conv_block(x, filters[i], pool, batch_norm_first)
         blocks += x
-        if i < max(range(depth)):
-            filters = filters*2
 
     return img_input, blocks
 
-def vgg16_encoder(input_height,  input_width):
+def vgg16_encoder(**kwargs):
 
-    input_height = kwargs[input_height]
-    input_width = kwargs[input_width]
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0

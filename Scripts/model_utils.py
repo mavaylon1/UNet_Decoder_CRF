@@ -1,5 +1,8 @@
 from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
-    Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D
+    Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
+from keras.models import *
+from keras.layers import *
+from keras import layers
 import sys
 sys.path.insert(1, '../src')
 sys.path.insert(1, '../image_segmentation_keras')
@@ -31,43 +34,23 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
     else:
         return x
 
-def unet_decoder(encoder,input_height, input_width, n_classes, filters, depth, transpose, batch_norm_first, crfrnn_layer):
+def unet_output_block(**kwargs):
+    input = kwargs['input']
+    n_classes = kwargs['n_classes']
+    batch_norm_first = kwargs['batch_norm_first']
 
-    encoder = kwargs[encoder]
-    input_height = kwargs[input_height]
-    input_width = kwargs[input_width]
-    n_classes = kwargs[n_classes]
-    filters = kwargs[filters]
-    depth = kwargs[depth]
-    transpose = kwargs[transpose]
-    batch_norm_first = kwargs[batch_norm_first]
-    crfrnn_layer = kwargs[crfrnn_layer]
+    if batch_norm_first == True:
+        x = Conv2D(n_classes, (3, 3), padding='same')(input)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        return x
 
-    img_input, levels = encoder
-    levels = levels[::-1] #reverses list to start with level with the most filters
-    filters = levels[::-1]
+    else:
+        x = Conv2D(n_classes, (3, 3), padding='same')(input)
+        x = Activation('relu')(x)
+        x = BatchNormalization()(x)
+        return x
 
-    if len(levels) != len(filters):
-        msg = "The number of levels and filters need to be the same"
-        raise ValueError(msg)
-
-    if transpose == False:
-        for i in range(depth):
-            x = unet_conv_block(levels[i], pool=False)
-            if i < max(range(depth)):
-                x = UpSampling2D((2, 2)))(x)
-                x = concatenate([x, levels[i+1]], axis=3))
-            else:
-                x = Conv2D(n_classes, (1, 1), padding='same')(x)
-                return x
-    elif transpose == True:
-        for i in range(depth):
-            x = unet_conv_block(levels[i], pool=False)
-            if i < max(range(depth)):
-                x = Conv2DTranspose(filters[i],(2,2), strides=2, padding='same')(x)
-                x = concatenate([x, levels[i+1]], axis=3))
-            else:
-                x = Conv2D(n_classes, (1, 1) , padding='same')(x)
 
 def one_side_pad(x):
     x = ZeroPadding2D((1, 1))(x)
