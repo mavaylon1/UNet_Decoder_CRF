@@ -2,6 +2,55 @@ from model_utils import *
 from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
 
+def resnet34_encoder(**kwargs):
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
+
+    assert input_height % 32 == 0
+    assert input_width % 32 == 0
+
+    img_input = Input(shape=(input_height, input_width, 3))
+
+    bn_axis = 3
+
+
+    x = ZeroPadding2D((3, 3))(img_input)
+    x = Conv2D(64, (7, 7), strides=(2, 2), name='conv1')(x)
+    f1 = x
+    x = BatchNormalization(axis=bn_axis, name='bn_conv1')(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D((3, 3), strides=(2, 2))(x)
+    print(x.shape)
+
+    x = resnet34_conv_block(x, 3, [64, 64], stage=2, block='a', strides=(1, 1))
+    x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='b')
+    x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='c')
+    print(x.shape)
+    # f2 = one_side_pad(x)
+
+
+    x = resnet34_conv_block(x, 3, [128, 128], stage=3, block='a')
+    x = resnet34_identity_block(x, 3, [128, 128], stage=3, block='b')
+    x = resnet34_identity_block(x, 3, [128, 128], stage=3, block='c')
+    x = resnet34_identity_block(x, 3, [128, 128], stage=3, block='d')
+    f3 = x
+    print(x.shape)
+
+    x = resnet34_conv_block(x, 3, [256, 256], stage=4, block='a')
+    x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='b')
+    x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='c')
+    x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='d')
+    x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='e')
+    x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='f')
+    f4 = x
+
+    x = resnet34_conv_block(x, 3, [512, 512], stage=5, block='a')
+    x = resnet34_identity_block(x, 3, [512, 512], stage=5, block='b')
+    x = resnet34_identity_block(x, 3, [512, 512], stage=5, block='c')
+    f5 = x
+
+    return img_input, [f1, f3, f4, f5]
+
 def resnet50_encoder(**kwargs):
 
     input_height = kwargs['input_height']
@@ -27,9 +76,13 @@ def resnet50_encoder(**kwargs):
     x = resnet50_conv_block(x, 3, [64, 64, 256], stage=2, block='a', strides=(1, 1))
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='b')
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='c')
-    f2 = one_side_pad(x)
+    print(x.shape)
+    # f2 = one_side_pad(x)
+    f2=x
+    print(x.shape)
 
     x = resnet50_conv_block(x, 3, [128, 128, 512], stage=3, block='a')
+    print(x.shape)
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='b')
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='c')
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='d')
