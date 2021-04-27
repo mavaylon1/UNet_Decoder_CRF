@@ -12,7 +12,7 @@ import sys
 sys.path.insert(1, '../image_segmentation_keras')
 from keras_segmentation.models.config import IMAGE_ORDERING
 
-from keras_segmentation.models.model_utils import get_segmentation_model
+from image_segmenation_keras.keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
 
 
