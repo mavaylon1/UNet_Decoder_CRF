@@ -33,15 +33,17 @@ def unet_decoder(**kwargs):
     x = levels[0]
     if transpose == False:
         for i in range(depth):
-            x = unet_conv_block(x, filters[i], pool=False)
+            x = unet_conv_block(x, filters[i], pool=False, batch_norm_first=True)
             if i < max(range(depth)):
                 x = UpSampling2D((2, 2))(x)
                 x = concatenate([x, levels[i+1]], axis=3)
             else:
                 x = UpSampling2D((2, 2))(x)
-                x = unet_conv_block(x, filters[i], pool=False)
+                x = unet_conv_block(x, filters[i], pool=False, batch_norm_first=True)
                 x = unet_output_block(input=x, n_classes=3, batch_norm_first=True)
                 if crfrnn_layer == True:
+                    x = BatchNormalization()(x)
+                    x = Activation('relu')(x)
                     x = CrfRnnLayer(image_dims=(input_height, input_width),
                          num_classes=n_classes,
                          theta_alpha=160.,
@@ -53,15 +55,17 @@ def unet_decoder(**kwargs):
                 return model
     elif transpose == True:
         for i in range(depth):
-            x = unet_conv_block(levels[i], filters[i], pool=False)
+            x = unet_conv_block(levels[i], filters[i], pool=False, batch_norm_first=True)
             if i < max(range(depth)):
                 x = Conv2DTranspose(filters[i],(2,2), strides=2, padding='same')(x)
                 x = concatenate([x, levels[i+1]], axis=3)
             else:
-                x = UpSampling2D((2, 2))(x)
-                x = unet_conv_block(x, filters[i], pool=False)
+                x = Conv2DTranspose(filters[i],(2,2), strides=2, padding='same')(x)
+                x = unet_conv_block(x, filters[i], pool=False, batch_norm_first=True)
                 x = unet_output_block(input=x, n_classes=3, batch_norm_first=True)
                 if crfrnn_layer == True:
+                    x = BatchNormalization()(x)
+                    x = Activation('relu')(x)
                     x = CrfRnnLayer(image_dims=(input_height, input_width),
                          num_classes=n_classes,
                          theta_alpha=160.,

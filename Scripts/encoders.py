@@ -26,7 +26,7 @@ def resnet34_encoder(**kwargs):
     x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='b')
     x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='c')
     print(x.shape)
-    # f2 = one_side_pad(x)
+    f2 = one_side_pad(x)
 
 
     x = resnet34_conv_block(x, 3, [128, 128], stage=3, block='a')
@@ -77,8 +77,7 @@ def resnet50_encoder(**kwargs):
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='b')
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='c')
     print(x.shape)
-    # f2 = one_side_pad(x)
-    f2=x
+    f2 = one_side_pad(x)
     print(x.shape)
 
     x = resnet50_conv_block(x, 3, [128, 128, 512], stage=3, block='a')
@@ -108,7 +107,7 @@ def unet_encoder(**kwargs):
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
     filters = kwargs['filters']
-    depth = kwargs['depth']
+    depth = len(filters)
     channels = kwargs['channels']
     batch_norm_first = kwargs['batch_norm_first']
     pool = True
@@ -118,22 +117,48 @@ def unet_encoder(**kwargs):
 
     x = Input(shape=(input_height, input_width, channels))
 
-    blocks = []
+    concat_layers = []
+
     for i in range(depth):
         x = unet_conv_block(x, filters[i], pool, batch_norm_first)
-        blocks += x
+        concat_layers += x
 
-    return img_input, blocks
+    return img_input, concat_layers
+
+def unet_encoder(**kwargs):
+
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
+    filters = kwargs['filters']
+    depth = len(filters)
+    channels = kwargs['channels']
+    batch_norm_first = kwargs['batch_norm_first']
+    pool = True
+
+    img_input = Input(shape=(input_height,input_width, channels))
+    f1 = unet_conv_block(img_input, 64, pool=True, batch_norm_first=True)
+    pool1 = MaxPooling2D((2, 2))(f1)
+    f2 = unet_conv_block(pool1, 128, pool=True, batch_norm_first=True)
+    pool2 = MaxPooling2D((2, 2))(f2)
+    f3 = unet_conv_block(pool2, 256, pool=True, batch_norm_first=True)
+    pool3 = MaxPooling2D((2, 2))(f3)
+    f4 = unet_conv_block(pool3, 512, pool=True, batch_norm_first=True)
+    pool4 = MaxPooling2D((2, 2))(f4)
+    # f5 = unet_conv_block(f4[1], 1024, pool=False, batch_norm_first=True)
+
+    return img_input, [f1, f2, f3, f4, pool4]
+
 
 def vgg16_encoder(**kwargs):
 
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
+    channels = kwargs['channels']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0
 
-    img_input = Input(shape=(input_height, input_width, 3))
+    img_input = Input(shape=(input_height, input_width, channels))
 
     x = Conv2D(64, (3, 3), activation='relu', padding='same',
                name='block1_conv1')(img_input)

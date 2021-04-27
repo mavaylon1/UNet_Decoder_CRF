@@ -28,11 +28,7 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         x = Activation("relu")(x)
         x = BatchNormalization()(x)
 
-    if pool == True:
-        x = MaxPooling2D((2, 2))(x)
-        return x
-    else:
-        return x
+    return x
 
 def unet_output_block(**kwargs):
     input = kwargs['input']
@@ -41,14 +37,10 @@ def unet_output_block(**kwargs):
 
     if batch_norm_first == True:
         x = Conv2D(n_classes, (3, 3), padding='same')(input)
-        x = BatchNormalization()(x)
-        x = Activation('relu')(x)
         return x
 
     else:
         x = Conv2D(n_classes, (3, 3), padding='same')(input)
-        x = Activation('relu')(x)
-        x = BatchNormalization()(x)
         return x
 
 
