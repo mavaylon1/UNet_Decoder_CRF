@@ -60,7 +60,7 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     o = f5
     
     """ Bridge """
-       o = unet_conv_block(o, 512, pool=False)
+    o = unet_conv_block(o, 512, pool=False)
     
     o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
     o = (concatenate([o, f4], axis=3))
