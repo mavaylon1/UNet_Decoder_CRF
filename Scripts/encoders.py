@@ -49,7 +49,7 @@ def resnet34_encoder(**kwargs):
     x = resnet34_identity_block(x, 3, [512, 512], stage=5, block='c')
     f5 = x
 
-    return img_input, [f1, f3, f4, f5]
+    return img_input, [f1, f2, f3, f4, f5]
 
 def resnet50_encoder(**kwargs):
 
