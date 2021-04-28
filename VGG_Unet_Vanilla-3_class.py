@@ -10,9 +10,9 @@ from keras import layers
 from keras.layers.merge import concatenate
 import sys
 sys.path.insert(1, '../image_segmentation_keras')
-from image_segmentation_keras.keras_segmentation.models.config import IMAGE_ORDERING
+from keras_segmentation.models.config import IMAGE_ORDERING
 
-from image_segmentation_keras.keras_segmentation.models.model_utils import get_segmentation_model
+from keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
 
 
@@ -44,7 +44,7 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         return x
 
 
-# In[27]:
+# In[18]:
 
 
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
@@ -56,37 +56,40 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     [f1, f2, f3, f4, f5] = levels
     
     print("f5",f5.shape)
+    print("f4",f4.shape)
+    print("f3",f3.shape)
+    print("f2",f2.shape)
+    print("f1",f1.shape)
 
     o = f5
     
     """ Bridge """
     o = unet_conv_block(o, 512, pool=False)
-    
-    o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
-    o = (concatenate([o, f4], axis=3))
-    o = unet_conv_block(o, 512, pool=False)
+    x = UpSampling2D((2, 2))(f5)
+    x = concatenate([x, f4], axis=3)
+    x = unet_conv_block(x, 512, pool=False, batch_norm_first=True)
 
-    o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
-    o = (concatenate([o, f3], axis=3))
-    o = unet_conv_block(o, 256, pool=False)
-    
-    o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    o = (concatenate([o, f2], axis=3))
-    o = unet_conv_block(o, 128, pool=False)
-    
-    o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    o = (concatenate([o, f1], axis=3))
-    o = unet_conv_block(o, 64, pool=False)
-    
-    o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
-    o = Conv2D(n_classes, (3, 3), padding='same',
-               data_format=IMAGE_ORDERING)(o)
+    x = UpSampling2D((2, 2))(x)
+    x = concatenate([x, f3], axis=3)
+    x = unet_conv_block(x, 256, pool=False, batch_norm_first=True)
+
+    x = UpSampling2D((2, 2))(x)
+    x = concatenate([x, f2], axis=3)
+    x = unet_conv_block(x, 128, pool=False, batch_norm_first=True)
+
+    x = UpSampling2D((2, 2))(x)
+    x = concatenate([x, f1], axis=3)
+    x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
+
+    x = Conv2D(n_classes, (3, 3), padding='same')(x)
+    print('b4n_class', o.shape)
+
     model = get_segmentation_model(img_input, o)
 
     return model
 
 
-# In[28]:
+# In[22]:
 
 
 if IMAGE_ORDERING == 'channels_first':
@@ -107,49 +110,47 @@ def get_vgg_encoder(input_height=224,  input_width=224, pretrained='imagenet'):
                name='block1_conv1', data_format=IMAGE_ORDERING)(img_input)
     x = Conv2D(64, (3, 3), activation='relu', padding='same',
                name='block1_conv2', data_format=IMAGE_ORDERING)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool',
+    p1 = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool',
                      data_format=IMAGE_ORDERING)(x)
     f1 = x
     # Block 2
     x = Conv2D(128, (3, 3), activation='relu', padding='same',
-               name='block2_conv1', data_format=IMAGE_ORDERING)(x)
+               name='block2_conv1', data_format=IMAGE_ORDERING)(p1)
     x = Conv2D(128, (3, 3), activation='relu', padding='same',
                name='block2_conv2', data_format=IMAGE_ORDERING)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool',
+    p2 = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool',
                      data_format=IMAGE_ORDERING)(x)
     f2 = x
 
     # Block 3
     x = Conv2D(256, (3, 3), activation='relu', padding='same',
-               name='block3_conv1', data_format=IMAGE_ORDERING)(x)
+               name='block3_conv1', data_format=IMAGE_ORDERING)(p2)
     x = Conv2D(256, (3, 3), activation='relu', padding='same',
                name='block3_conv2', data_format=IMAGE_ORDERING)(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same',
                name='block3_conv3', data_format=IMAGE_ORDERING)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool',
+    p3 = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool',
                      data_format=IMAGE_ORDERING)(x)
     f3 = x
 
     # Block 4
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
-               name='block4_conv1', data_format=IMAGE_ORDERING)(x)
+               name='block4_conv1', data_format=IMAGE_ORDERING)(p3)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block4_conv2', data_format=IMAGE_ORDERING)(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block4_conv3', data_format=IMAGE_ORDERING)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool',
+    p4 = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool',
                      data_format=IMAGE_ORDERING)(x)
     f4 = x
 
     # Block 5
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
-               name='block5_conv1', data_format=IMAGE_ORDERING)(x)
+               name='block5_conv1', data_format=IMAGE_ORDERING)(p4)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block5_conv2', data_format=IMAGE_ORDERING)(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block5_conv3', data_format=IMAGE_ORDERING)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool',
-                     data_format=IMAGE_ORDERING)(x)
     f5 = x
 
 #     if pretrained == 'imagenet':
@@ -160,7 +161,7 @@ def get_vgg_encoder(input_height=224,  input_width=224, pretrained='imagenet'):
     return img_input, [f1, f2, f3, f4, f5]
 
 
-# In[29]:
+# In[23]:
 
 
 def vgg_unet(n_classes, input_height=416, input_width=608, encoder_level=3):
@@ -171,7 +172,7 @@ def vgg_unet(n_classes, input_height=416, input_width=608, encoder_level=3):
     return model
 
 
-# In[30]:
+# In[24]:
 
 
 model = vgg_unet(n_classes=3,input_height=256, input_width=256)
