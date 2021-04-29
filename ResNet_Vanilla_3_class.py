@@ -4,17 +4,22 @@
 # In[1]:
 
 
-from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, Input, Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
+from keras.layers import *
 from keras.models import Model
+from keras import layers
 from keras.layers.merge import concatenate
-from image_segmentation_keras.keras_segmentation.models.model_utils import get_segmentation_model
+import sys
+sys.path.insert(1, '../image_segmentation_keras')
+from keras_segmentation.models.config import IMAGE_ORDERING
+
+from keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
 
 
 # In[2]:
 
 
-channels, height, width = 3, 512, 512
+channels = 2
 input_height=256 #416
 input_width=256 #608
 
@@ -22,29 +27,39 @@ input_width=256 #608
 # In[3]:
 
 
-def unet_conv_block(inputs, filters, pool=True):
-    x = Conv2D(filters, 3, padding="same")(inputs)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
+def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
+    if batch_norm_first == True:
+        x = Conv2D(filters, 3, padding="same")(inputs)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
 
-    x = Conv2D(filters, 3, padding="same")(x)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
+        x = Conv2D(filters, 3, padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+    elif batch_norm_first == False:
+        x = Conv2D(filters, 3, padding="same")(inputs)
+        x = Activation("relu")(x)
+        x = BatchNormalization()(x)
+
+        x = Conv2D(filters, 3, padding="same")(x)
+        x = Activation("relu")(x)
+        x = BatchNormalization()(x)
 
     if pool == True:
         p = MaxPooling2D((2, 2))(x)
-        return x, p
+        return [x, p]
     else:
         return x
 
 
-# In[4]:
+# In[ ]:
 
 
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
           input_width=608):
+def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
+          input_width=608):
 
-  
     img_input, levels = encoder(
         input_height=input_height, input_width=input_width)
     [f1, f2, f3, f4, f5] = levels
@@ -54,62 +69,30 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     o = f5
     
     """ Bridge """
-    o = unet_conv_block(o, 128, pool=False)
-    o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
-
+    o = unet_conv_block(o, 2048, pool=False)
     
-#     o = (Conv2D(512, (3, 3), padding='same' , activation='relu' , data_format=IMAGE_ORDERING))(o)
-#     o = (Conv2D(512, (3, 3), padding='same' , activation='relu' , data_format=IMAGE_ORDERING))(o)
-#     o = (BatchNormalization())(o)
-#     o = Conv2DTranspose(1024,(2,2),strides=2,padding='same')(o)
-    print('first upsample',o.shape)
-
+    o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
     o = (concatenate([o, f4], axis=3))
     o = unet_conv_block(o, 1024, pool=False)
     
-    
-
-#     o = Conv2DTranspose(512,(2,2),strides=2,padding='same')(o)
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-#     print('second upsample',o.shape)
     o = (concatenate([o, f3], axis=3))
-    print("f3/second conc",o.shape)
     o = unet_conv_block(o, 512, pool=False)
     
 
-#     o = Conv2DTranspose(256,(2,2),strides=2,padding='same')(o)
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('third upsample',o.shape)
     o = (concatenate([o, f2], axis=3))
-    print('third concat')
     o = unet_conv_block(o, 256, pool=False)
 
 
-#     o = Conv2DTranspose(128,(2,2),strides=2,padding='same')(o)
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-#     print('fourth upsample',o.shape)
     o = (concatenate([o, f1], axis=3))
-    print('fourth concat',o.shape)
-
-    o = unet_conv_block(o, 128, pool=False)
-    
-#     o = Conv2DTranspose(64,(2,2),strides=2,padding='same')(o)
-    o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('fifth upsample',o.shape)
     o = unet_conv_block(o, 64, pool=False)
+    
+    o = UpSampling2D((2, 2), interpolation="bilinear")(o)
     
     o = Conv2D(n_classes, (3, 3), padding='same',
                data_format=IMAGE_ORDERING)(o)
-    o = BatchNormalization()(o)
-    o = Activation('relu')(o)
-    print("cnn output",o.shape)
-#     crf_output = CrfRnnLayer(image_dims=(input_height, input_width),
-#                          num_classes=n_classes,
-#                          theta_alpha=160.,
-#                          theta_beta=3.,
-#                          theta_gamma=3.,
-#                          num_iterations=10,
-#                          name='crfrnn')([o, img_input])
     model = get_segmentation_model(img_input, o)
 
     return model
@@ -118,31 +101,10 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
 # In[5]:
 
 
-import keras
-from keras.models import *
-from keras.layers import *
-from keras import layers
-
-# Source:
-# https://github.com/fchollet/deep-learning-models/blob/master/resnet50.py
-
-
-from image_segmentation_keras.keras_segmentation.models.config import IMAGE_ORDERING
-
 if IMAGE_ORDERING == 'channels_first':
     MERGE_AXIS = 1
 elif IMAGE_ORDERING == 'channels_last':
     MERGE_AXIS = -1
-
-# if IMAGE_ORDERING == 'channels_first':
-#     pretrained_url = "https://github.com/fchollet/deep-learning-models/" \
-#                      "releases/download/v0.2/" \
-#                      "resnet50_weights_th_dim_ordering_th_kernels_notop.h5"
-# elif IMAGE_ORDERING == 'channels_last':
-#     pretrained_url = "https://github.com/fchollet/deep-learning-models/" \
-#                      "releases/download/v0.2/" \
-#                      "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
-
 
 def one_side_pad(x):
     x = ZeroPadding2D((1, 1), data_format=IMAGE_ORDERING)(x)
@@ -296,15 +258,6 @@ def get_resnet50_encoder(input_height,  input_width,
     x = identity_block(x, 3, [512, 512, 2048], stage=5, block='c')
     f5 = x
 
-    x = AveragePooling2D(
-        (7, 7), data_format=IMAGE_ORDERING, name='avg_pool')(x)
-    # f6 = x
-
-#     if pretrained == 'imagenet':
-#         weights_path = keras.utils.get_file(
-#             pretrained_url.split("/")[-1], pretrained_url)
-#         Model(img_input, x).load_weights(weights_path)
-
     return img_input, [f1, f2, f3, f4, f5]
 
 
@@ -331,6 +284,8 @@ def resnet50_unet(n_classes, input_height=512, input_width=512,
 
 model = resnet50_unet(n_classes=3 ,  input_height=256, input_width=256  )
 
+model.summary()
+
 
 # In[8]:
 
@@ -347,6 +302,7 @@ model.train(
     val_batch_size=1,
     val_steps_per_epoch=len(glob("/home/maavaylon/Data1/test/img/*"))
 )
+
 
 # In[ ]:
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from keras.layers import *
@@ -16,7 +16,7 @@ from keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
 
 
-# In[2]:
+# In[ ]:
 
 
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
@@ -44,7 +44,7 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         return x
 
 
-# In[18]:
+# In[4]:
 
 
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
@@ -56,10 +56,6 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     [f1, f2, f3, f4, f5] = levels
     
     print("f5",f5.shape)
-    print("f4",f4.shape)
-    print("f3",f3.shape)
-    print("f2",f2.shape)
-    print("f1",f1.shape)
 
     o = f5
     
@@ -83,14 +79,13 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
 
     x = Conv2D(n_classes, (3, 3), padding='same')(x)
-    print('b4n_class', o.shape)
-
     model = get_segmentation_model(img_input, o)
 
     return model
 
 
-# In[22]:
+# In[5]:
+
 
 
 if IMAGE_ORDERING == 'channels_first':
@@ -162,7 +157,7 @@ def get_vgg_encoder(input_height=224,  input_width=224, pretrained='imagenet'):
     return img_input, [f1, f2, f3, f4, f5]
 
 
-# In[23]:
+# In[6]:
 
 
 def vgg_unet(n_classes, input_height=416, input_width=608, encoder_level=3):
@@ -173,26 +168,26 @@ def vgg_unet(n_classes, input_height=416, input_width=608, encoder_level=3):
     return model
 
 
-# In[24]:
+# In[7]:
 
 
-model = vgg_unet(n_classes=3,input_height=256, input_width=256)
+model = vgg_unet(n_classes=2,input_height=512, input_width=512)
 
 
 # In[8]:
 
 
 model.train(
-    train_images =  "/home/maavaylon/Data1/train/img/",
-    train_annotations = "/home/maavaylon/Data1/train/ann/",
+    train_images = "/home/maavaylon/Binary_Data/BP_lrc_training/img/",
+    train_annotations = "/home/maavaylon/Binary_Data/BP_lrc_training/ann/",
     epochs=20,
-    steps_per_epoch=len(glob("/home/maavaylon/Data1/train/img/*")),
+    steps_per_epoch=len(glob("/home/maavaylon/Binary_Data/BP_lrc_training/img/*")),
     batch_size=1,
     validate=True,
-    val_images="/home/maavaylon/Data1/test/img/",
-    val_annotations="/home/maavaylon/Data1/test/ann/",
+    val_images="/home/maavaylon/Binary_Data/BP_lrc_testing/img/",
+    val_annotations="/home/maavaylon/Binary_Data/BP_lrc_testing/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/home/maavaylon/Data1/test/img/*"))
+    val_steps_per_epoch=len(glob("/home/maavaylon/Binary_Data/BP_lrc_testing/img/*"))
 )
 
 

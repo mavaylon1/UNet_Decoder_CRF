@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 from keras.layers import *
@@ -9,46 +9,59 @@ from keras.models import Model
 from keras import layers
 from keras.layers.merge import concatenate
 import sys
+sys.path.insert(1, '../src')
 sys.path.insert(1, '../image_segmentation_keras')
 from keras_segmentation.models.config import IMAGE_ORDERING
 
 from keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
-
-
-# In[2]:
-
-
-input_height=256 #416
-input_width=256 #608
-
-
-# In[3]:
-
-
-def unet_conv_block(inputs, filters, pool=True):
-    x = Conv2D(filters, 3, padding="same")(inputs)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
-
-    x = Conv2D(filters, 3, padding="same")(x)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
-
-    if pool == True:
-        p = MaxPooling2D((2, 2))(x)
-        return x, p
-    else:
-        return x
+from crfrnn_layer import CrfRnnLayer
 
 
 # In[4]:
 
 
+channels = 2
+input_height=512 #416
+input_width=512 #608
+
+
+# In[ ]:
+
+
+def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
+    if batch_norm_first == True:
+        x = Conv2D(filters, 3, padding="same")(inputs)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+
+        x = Conv2D(filters, 3, padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+    elif batch_norm_first == False:
+        x = Conv2D(filters, 3, padding="same")(inputs)
+        x = Activation("relu")(x)
+        x = BatchNormalization()(x)
+
+        x = Conv2D(filters, 3, padding="same")(x)
+        x = Activation("relu")(x)
+        x = BatchNormalization()(x)
+
+    if pool == True:
+        p = MaxPooling2D((2, 2))(x)
+        return [x, p]
+    else:
+        return x
+
+
+# In[ ]:
+
+
+def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
+          input_width=608):
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
           input_width=608):
 
-  
     img_input, levels = encoder(
         input_height=input_height, input_width=input_width)
     [f1, f2, f3, f4, f5] = levels
@@ -59,57 +72,35 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     
     """ Bridge """
     o = unet_conv_block(o, 2048, pool=False)
+    
     o = (UpSampling2D((2, 2), data_format=IMAGE_ORDERING))(o)
-
-    print('f4',f4.shape)
-    print('o b4 concact with f4',o.shape)
-
     o = (concatenate([o, f4], axis=3))
     o = unet_conv_block(o, 1024, pool=False)
+    
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('f3',f3.shape)
-    print('o b4 concact with f3',o.shape)
     o = (concatenate([o, f3], axis=3))
     o = unet_conv_block(o, 512, pool=False)
     
 
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('f2',f2.shape)
-    print('o b4 concact with f2',o.shape)
     o = (concatenate([o, f2], axis=3))
     o = unet_conv_block(o, 256, pool=False)
 
 
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('f1',f1.shape)
-    print('o b4 concact with f1',o.shape)
     o = (concatenate([o, f1], axis=3))
-
-    o = unet_conv_block(o, 128, pool=False)
+    o = unet_conv_block(o, 64, pool=False)
     
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    print('fifth upsample',o.shape)
-    o = unet_conv_block(o, 64, pool=False)
     
     o = Conv2D(n_classes, (3, 3), padding='same',
                data_format=IMAGE_ORDERING)(o)
-    o = BatchNormalization()(o)
-    o = Activation('relu')(o)
-    print("cnn output",o.shape)
-    crf_output = CrfRnnLayer(image_dims=(input_height, input_width),
-                         num_classes=n_classes,
-                         theta_alpha=160.,
-                         theta_beta=3.,
-                         theta_gamma=3.,
-                         num_iterations=10,
-                         name='crfrnn')([o, img_input])
-    model = get_segmentation_model(img_input, crf_output)
+    model = get_segmentation_model(img_input, o)
 
     return model
 
 
-# In[5]:
-
+# In[6]:
 
 
 if IMAGE_ORDERING == 'channels_first':
@@ -281,7 +272,7 @@ def get_resnet50_encoder(input_height,  input_width,
     return img_input, [f1, f2, f3, f4, f5]
 
 
-# In[6]:
+# In[7]:
 
 
 def resnet50_unet(n_classes, input_height=512, input_width=512,
@@ -293,37 +284,31 @@ def resnet50_unet(n_classes, input_height=512, input_width=512,
     return model
 
 
-# In[7]:
+# In[ ]:
 
 
-model = resnet50_unet(n_classes=3 ,  input_height=256, input_width=256  )
+
+
+
+# In[8]:
+
+
+model = resnet50_unet(n_classes=2 ,  input_height=512, input_width=512  )
 
 
 # In[9]:
 
 
-model.summary()
-
-
-# In[ ]:
-
-
 model.train(
-    train_images =  "/Users/mavaylon/Research/Data1/train/img/",
-    train_annotations = "/Users/mavaylon/Research/Data1/train/ann/",
+    train_images = "/home/maavaylon/Binary_Data/BP_lrc_training/img/",
+    train_annotations = "/home/maavaylon/Binary_Data/BP_lrc_training/ann/",
     epochs=20,
-    steps_per_epoch=len(glob("/Users/mavaylon/Research/Data1/train/img/*")),
+    steps_per_epoch=len(glob("/home/maavaylon/Binary_Data/BP_lrc_training/img/*")),
     batch_size=1,
     validate=True,
-    val_images="/Users/mavaylon/Research/Data1/test/img/",
-    val_annotations="/Users/mavaylon/Research/Data1/test/ann/",
+    val_images="/home/maavaylon/Binary_Data/BP_lrc_testing/img/",
+    val_annotations="/home/maavaylon/Binary_Data/BP_lrc_testing/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/Users/mavaylon/Research/Data1/test/img/*"))
+    val_steps_per_epoch=len(glob("/home/maavaylon/Binary_Data/BP_lrc_testing/img/*"))
 )
-
-
-# In[ ]:
-
-
-
 
