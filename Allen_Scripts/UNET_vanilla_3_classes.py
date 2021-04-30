@@ -57,27 +57,27 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
 
 
 img_input = Input(shape=(input_height,input_width, channels))
-f1 = unet_conv_block(img_input, 64, pool=True, batch_norm_first=True)
-f2 = unet_conv_block(f1[1], 128, pool=True, batch_norm_first=True)
-f3 = unet_conv_block(f2[1], 256, pool=True, batch_norm_first=True)
-f4 = unet_conv_block(f3[1], 512, pool=True, batch_norm_first=True)
-f5 = unet_conv_block(f4[1], 1024, pool=False, batch_norm_first=True)
+f1 = unet_conv_block(img_input, 64, pool=True, batch_norm_first=False)
+f2 = unet_conv_block(f1[1], 128, pool=True, batch_norm_first=False)
+f3 = unet_conv_block(f2[1], 256, pool=True, batch_norm_first=False)
+f4 = unet_conv_block(f3[1], 512, pool=True, batch_norm_first=False)
+f5 = unet_conv_block(f4[1], 1024, pool=False, batch_norm_first=False)
 
 x = UpSampling2D((2, 2))(f5)
 x = concatenate([x, f4[0]], axis=3)
-x = unet_conv_block(x, 512, pool=False, batch_norm_first=True)
+x = unet_conv_block(x, 512, pool=False, batch_norm_first=False)
 
 x = UpSampling2D((2, 2))(x)
 x = concatenate([x, f3[0]], axis=3)
-x = unet_conv_block(x, 256, pool=False, batch_norm_first=True)
+x = unet_conv_block(x, 256, pool=False, batch_norm_first=False)
 
 x = UpSampling2D((2, 2))(x)
 x = concatenate([x, f2[0]], axis=3)
-x = unet_conv_block(x, 128, pool=False, batch_norm_first=True)
+x = unet_conv_block(x, 128, pool=False, batch_norm_first=False)
 
 x = UpSampling2D((2, 2))(x)
 x = concatenate([x, f1[0]], axis=3)
-x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
+x = unet_conv_block(x, 64, pool=False, batch_norm_first=False)
 
 x = Conv2D(n_classes, (3, 3), padding='same')(x)
 
