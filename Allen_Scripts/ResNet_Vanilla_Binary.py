@@ -260,15 +260,6 @@ def get_resnet50_encoder(input_height,  input_width,
     x = identity_block(x, 3, [512, 512, 2048], stage=5, block='c')
     f5 = x
 
-    x = AveragePooling2D(
-        (7, 7), data_format=IMAGE_ORDERING, name='avg_pool')(x)
-    # f6 = x
-
-#     if pretrained == 'imagenet':
-#         weights_path = keras.utils.get_file(
-#             pretrained_url.split("/")[-1], pretrained_url)
-#         Model(img_input, x).load_weights(weights_path)
-
     return img_input, [f1, f2, f3, f4, f5]
 
 

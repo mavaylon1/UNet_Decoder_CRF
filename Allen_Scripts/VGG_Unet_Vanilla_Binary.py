@@ -22,20 +22,20 @@ from glob import glob
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
     if batch_norm_first == True:
         x = Conv2D(filters, 3, padding="same")(inputs)
-#         x = BatchNormalization()(x)
+        x = BatchNormalization()(x)
         x = Activation("relu")(x)
 
         x = Conv2D(filters, 3, padding="same")(x)
-#         x = BatchNormalization()(x)
+        x = BatchNormalization()(x)
         x = Activation("relu")(x)
     elif batch_norm_first == False:
         x = Conv2D(filters, 3, padding="same")(inputs)
         x = Activation("relu")(x)
-#         x = BatchNormalization()(x)
+        x = BatchNormalization()(x)
 
         x = Conv2D(filters, 3, padding="same")(x)
         x = Activation("relu")(x)
-#         x = BatchNormalization()(x)
+        x = BatchNormalization()(x)
 
     if pool == True:
         p = MaxPooling2D((2, 2))(x)
@@ -53,16 +53,20 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
   
     img_input, levels = encoder(
         input_height=input_height, input_width=input_width)
-    [f1, f2, f3, f4, f5] = levels
+    [f1, f2, f3, f4, f5, p5] = levels
     
     print("f5",f5.shape)
 
-    o = f5
+    x = p5
     
     """ Bridge """
-    o = unet_conv_block(o, 512, pool=False)
+    x = unet_conv_block(x, 1024, pool=False)
     
-    x = UpSampling2D((2, 2))(f5)
+    x = UpSampling2D((2, 2))(x)
+    x = concatenate([x, f5], axis=3)
+    x = unet_conv_block(x, 512, pool=False, batch_norm_first=True)
+    
+    x = UpSampling2D((2, 2))(x)
     x = concatenate([x, f4], axis=3)
     x = unet_conv_block(x, 512, pool=False, batch_norm_first=True)
 
@@ -79,13 +83,13 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
 
     x = Conv2D(n_classes, (3, 3), padding='same')(x)
-    model = get_segmentation_model(img_input, o)
+
+    model = get_segmentation_model(img_input, x)
 
     return model
 
 
 # In[5]:
-
 
 
 if IMAGE_ORDERING == 'channels_first':
@@ -147,14 +151,11 @@ def get_vgg_encoder(input_height=224,  input_width=224, pretrained='imagenet'):
                name='block5_conv2', data_format=IMAGE_ORDERING)(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block5_conv3', data_format=IMAGE_ORDERING)(x)
+    p5 = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool',
+                     data_format=IMAGE_ORDERING)(x)
     f5 = x
 
-#     if pretrained == 'imagenet':
-#         VGG_Weights_path = keras.utils.get_file(
-#             pretrained_url.split("/")[-1], pretrained_url)
-#         Model(img_input, x).load_weights(VGG_Weights_path)
-
-    return img_input, [f1, f2, f3, f4, f5]
+    return img_input, [f1, f2, f3, f4, f5, p5]
 
 
 # In[6]:

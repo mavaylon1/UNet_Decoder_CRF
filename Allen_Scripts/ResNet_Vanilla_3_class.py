@@ -19,7 +19,7 @@ from glob import glob
 # In[2]:
 
 
-channels = 2
+channels = 3
 input_height=256 #416
 input_width=256 #608
 
@@ -57,8 +57,6 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
 
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
           input_width=608):
-def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
-          input_width=608):
 
     img_input, levels = encoder(
         input_height=input_height, input_width=input_width)
@@ -90,9 +88,9 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     o = unet_conv_block(o, 64, pool=False)
     
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    
     o = Conv2D(n_classes, (3, 3), padding='same',
                data_format=IMAGE_ORDERING)(o)
+    
     model = get_segmentation_model(img_input, o)
 
     return model
@@ -283,8 +281,6 @@ def resnet50_unet(n_classes, input_height=512, input_width=512,
 
 
 model = resnet50_unet(n_classes=3 ,  input_height=256, input_width=256  )
-
-model.summary()
 
 
 # In[8]:
