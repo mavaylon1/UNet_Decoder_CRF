@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 from keras.layers import *
@@ -16,16 +16,16 @@ from keras_segmentation.models.model_utils import get_segmentation_model
 from glob import glob
 
 
-# In[ ]:
+# In[2]:
 
 
 input_height = 512
 input_width = 512
 n_classes = 2
-channels = 2
+channels = 3
 
 
-# In[ ]:
+# In[3]:
 
 
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
@@ -53,7 +53,7 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         return x
 
 
-# In[ ]:
+# In[4]:
 
 
 img_input = Input(shape=(input_height,input_width, channels))
@@ -84,7 +84,7 @@ x = Conv2D(n_classes, (3, 3), padding='same')(x)
 model = get_segmentation_model(img_input, x)
 
 
-# In[4]:
+# In[5]:
 
 
 model.train(
