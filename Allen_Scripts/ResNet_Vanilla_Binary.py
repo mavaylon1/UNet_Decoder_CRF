@@ -54,11 +54,6 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         return x
 
 
-# In[ ]:
-
-
-def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
-          input_width=608):
 def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
           input_width=608):
 
