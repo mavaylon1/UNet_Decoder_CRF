@@ -30,20 +30,20 @@ input_width=512 #608
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
     if batch_norm_first == True:
         x = Conv2D(filters, 3, padding="same")(inputs)
-        x = BatchNormalization()(x)
+#         x = BatchNormalization()(x)
         x = Activation("relu")(x)
 
         x = Conv2D(filters, 3, padding="same")(x)
-        x = BatchNormalization()(x)
+#         x = BatchNormalization()(x)
         x = Activation("relu")(x)
     elif batch_norm_first == False:
         x = Conv2D(filters, 3, padding="same")(inputs)
         x = Activation("relu")(x)
-        x = BatchNormalization()(x)
+#         x = BatchNormalization()(x)
 
         x = Conv2D(filters, 3, padding="same")(x)
         x = Activation("relu")(x)
-        x = BatchNormalization()(x)
+#         x = BatchNormalization()(x)
 
     if pool == True:
         p = MaxPooling2D((2, 2))(x)
