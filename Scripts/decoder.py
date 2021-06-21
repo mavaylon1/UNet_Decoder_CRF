@@ -111,7 +111,6 @@ def resnet_unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=3, batch_norm_first=True)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = Activation('relu')(x)
                     x = CrfRnnLayer(image_dims=(input_height, input_width),
                          num_classes=n_classes,
                          theta_alpha=160.,
@@ -132,7 +131,6 @@ def resnet_unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=3, batch_norm_first=True)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = Activation('relu')(x)
                     x = CrfRnnLayer(image_dims=(input_height, input_width),
                          num_classes=n_classes,
                          theta_alpha=160.,
