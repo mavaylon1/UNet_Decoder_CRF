@@ -1,5 +1,13 @@
 # LBNL_Segmentation_crf
 
+### Setup
+This repository has two submodules that are vital parts to the functionality of this software. Use 
+
+
+## 1. Clone the repository
+`git clone --recurse-submodules https://github.com/mavaylon1/LBNL_Segmentation_crf.git`
+The main branch is allen.
+
 Python Version: 3.7.6
 
 Keras API Version: 2.3.1
