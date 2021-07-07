@@ -17,6 +17,19 @@ In the current state, if users want to use Conditional Random Fields (CRF) in th
 
 - Keras from Tensorflow Version: 2.3.0-tf
 
+- h5py
+
+- opencv-python
+
+- tqdm
+
+- numpy
+
 The CPU can be used to train CRF and non-CRF models, but if a GPU is available, then users can train non-CRF models with the following installations.
 - conda install -c anaconda keras-gpu
 
+### 4. Optional: CRF Setup
+- `cd crfasrnn_keras/src/cpp`
+- `make`
+
+You will get a new file named high_dim_filter.so from this build. If you run into issues with the CRF, refer to https://github.com/sadeepj/crfasrnn_keras and follow the demo.
