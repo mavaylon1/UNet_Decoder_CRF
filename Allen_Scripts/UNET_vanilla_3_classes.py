@@ -79,7 +79,7 @@ x = UpSampling2D((2, 2))(x)
 x = concatenate([x, f1[0]], axis=3)
 x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
 
-x = Conv2D(n_classes, (3, 3), padding='same')(x)
+x = Conv2D(n_classes, (1, 1), padding='same')(x)
 
 model = get_segmentation_model(img_input, x)
 
