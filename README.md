@@ -13,13 +13,13 @@ Conda is a great tool to import tools and create environments for projects. To a
 
 ### 3. Install dependencies
 In the current state, if users want to use Conditional Random Fields (CRF) in their models, it must be trained on a CPU. 
-`conda install keras` 
-`pip install tensorflow==2.2.0`
-`conda install tqdm`
-`pip install numpy`
-`conda install imgaug`
-`conda install -c conda-forge opencv`
-`conda install jupyter notebook`
+- `conda install keras` 
+- `pip install tensorflow==2.2.0`
+- `conda install tqdm`
+- `pip install numpy`
+- `conda install imgaug`
+- `conda install -c conda-forge opencv`
+- `conda install jupyter notebook`
 
 Note: Keras API Version: 2.3.1 is confirmed to work.
 
