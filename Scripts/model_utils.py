@@ -33,16 +33,8 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
 def unet_output_block(**kwargs):
     input = kwargs['input']
     n_classes = kwargs['n_classes']
-    batch_norm_first = kwargs['batch_norm_first']
-
-    if batch_norm_first == True:
-        x = Conv2D(n_classes, (3, 3), padding='same')(input)
-        return x
-
-    else:
-        x = Conv2D(n_classes, (3, 3), padding='same')(input)
-        return x
-
+    x = Conv2D(n_classes, (1, 1), padding='same')(input)
+    return x
 
 def one_side_pad(x):
     x = ZeroPadding2D((1, 1))(x)

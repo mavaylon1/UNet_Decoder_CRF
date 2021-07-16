@@ -88,7 +88,7 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     x = concatenate([x, f1], axis=3)
     x = unet_conv_block(x, 64, pool=False, batch_norm_first=True)
 
-    x = Conv2D(n_classes, (3, 3), padding='same')(x)
+    x = Conv2D(n_classes, (1, 1), padding='same')(x)
 
     model = get_segmentation_model(img_input, x)
 

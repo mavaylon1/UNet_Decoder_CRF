@@ -201,6 +201,8 @@ def vgg16_encoder(**kwargs):
                name='block5_conv2')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same',
                name='block5_conv3')(x)
+    p5 = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool',
+                     data_format=IMAGE_ORDERING)(x)
     f5 = x
 
-    return img_input, [f1, f2, f3, f4, f5]
+    return img_input, [f1, f2, f3, f4, f5, p5]

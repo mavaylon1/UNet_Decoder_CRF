@@ -88,7 +88,7 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     o = unet_conv_block(o, 64, pool=False)
     
     o = UpSampling2D((2, 2), interpolation="bilinear")(o)
-    o = Conv2D(n_classes, (3, 3), padding='same',
+    o = Conv2D(n_classes, (1, 1), padding='same',
                data_format=IMAGE_ORDERING)(o)
     
     model = get_segmentation_model(img_input, o)
