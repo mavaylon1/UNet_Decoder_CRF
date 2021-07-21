@@ -9,7 +9,7 @@ from model_utils import *
 sys.path.insert(1, '../src')
 sys.path.insert(1, '../image_segmentation_keras')
 from keras_segmentation.models.model_utils import get_segmentation_model
-from crfrnn_layer import CrfRnnLayer
+# from crfrnn_layer import CrfRnnLayer
 
 """
     All decoders so far are based on UNET. There are different UNET decorders
@@ -48,13 +48,13 @@ def unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=n_classes)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = CrfRnnLayer(image_dims=(input_height, input_width),
-                         num_classes=n_classes,
-                         theta_alpha=160.,
-                         theta_beta=3.,
-                         theta_gamma=3.,
-                         num_iterations=10,
-                         name='crfrnn')([x, img_input])
+                    # x = CrfRnnLayer(image_dims=(input_height, input_width),
+                    #      num_classes=n_classes,
+                    #      theta_alpha=160.,
+                    #      theta_beta=3.,
+                    #      theta_gamma=3.,
+                    #      num_iterations=10,
+                    #      name='crfrnn')([x, img_input])
                 model = get_segmentation_model(img_input, x)
                 return model
     elif transpose == True:
@@ -68,13 +68,13 @@ def unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=n_classes)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = CrfRnnLayer(image_dims=(input_height, input_width),
-                         num_classes=n_classes,
-                         theta_alpha=160.,
-                         theta_beta=3.,
-                         theta_gamma=3.,
-                         num_iterations=10,
-                         name='crfrnn')([x, img_input])
+                    # x = CrfRnnLayer(image_dims=(input_height, input_width),
+                    #      num_classes=n_classes,
+                    #      theta_alpha=160.,
+                    #      theta_beta=3.,
+                    #      theta_gamma=3.,
+                    #      num_iterations=10,
+                    #      name='crfrnn')([x, img_input])
                 model = get_segmentation_model(img_input, x)
                 return model
 
@@ -109,13 +109,13 @@ def resnet_unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=n_classes)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = CrfRnnLayer(image_dims=(input_height, input_width),
-                         num_classes=n_classes,
-                         theta_alpha=160.,
-                         theta_beta=3.,
-                         theta_gamma=3.,
-                         num_iterations=10,
-                         name='crfrnn')([x, img_input])
+                    # x = CrfRnnLayer(image_dims=(input_height, input_width),
+                    #      num_classes=n_classes,
+                    #      theta_alpha=160.,
+                    #      theta_beta=3.,
+                    #      theta_gamma=3.,
+                    #      num_iterations=10,
+                    #      name='crfrnn')([x, img_input])
                 model = get_segmentation_model(img_input, x)
                 return model
     elif transpose == True:
@@ -129,12 +129,12 @@ def resnet_unet_decoder(**kwargs):
                 x = unet_output_block(input=x, n_classes=n_classes)
                 if crfrnn_layer == True:
                     x = BatchNormalization()(x)
-                    x = CrfRnnLayer(image_dims=(input_height, input_width),
-                         num_classes=n_classes,
-                         theta_alpha=160.,
-                         theta_beta=3.,
-                         theta_gamma=3.,
-                         num_iterations=10,
-                         name='crfrnn')([x, img_input])
+                    # x = CrfRnnLayer(image_dims=(input_height, input_width),
+                    #      num_classes=n_classes,
+                    #      theta_alpha=160.,
+                    #      theta_beta=3.,
+                    #      theta_gamma=3.,
+                    #      num_iterations=10,
+                    #      name='crfrnn')([x, img_input])
                 model = get_segmentation_model(img_input, x)
                 return model

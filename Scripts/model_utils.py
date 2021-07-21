@@ -7,7 +7,7 @@ import sys
 sys.path.insert(1, '../src')
 sys.path.insert(1, '../image_segmentation_keras')
 from keras_segmentation.models.model_utils import get_segmentation_model
-from crfrnn_layer import CrfRnnLayer
+# from crfrnn_layer import CrfRnnLayer
 
 
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
