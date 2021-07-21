@@ -102,6 +102,74 @@ def resnet50_encoder(**kwargs):
 
     return img_input, [f1, f2, f3, f4, f5]
 
+def resnet101_encoder(**kwargs):
+
+    input_height = kwargs['input_height']
+    input_width = kwargs['input_width']
+
+    assert input_height % 32 == 0
+    assert input_width % 32 == 0
+
+    img_input = Input(shape=(input_height, input_width, 3))
+
+    bn_axis = 3
+
+
+    x = ZeroPadding2D((3, 3))(img_input)
+    x = Conv2D(64, (7, 7),
+               strides=(2, 2), name='conv1')(x)
+    f1 = x
+
+    x = BatchNormalization(axis=bn_axis, name='bn_conv1')(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D((3, 3), strides=(2, 2))(x)
+
+    x = resnet50_conv_block(x, 3, [64, 64, 256], stage=2, block='a', strides=(1, 1))
+    x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='b')
+    x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='c')
+    print(x.shape)
+    f2 = one_side_pad(x)
+    print(x.shape)
+
+    x = resnet50_conv_block(x, 3, [128, 128, 512], stage=3, block='a')
+    x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='b')
+    x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='c')
+    x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='d')
+    f3 = x
+
+    x = resnet50_conv_block(x, 3, [256, 256, 1024], stage=4, block='a')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='b')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='c')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='d')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='e')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='f')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='g')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='h')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='i')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='j')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='k')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='l')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='m')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='n')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='o')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='p')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='q')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='r')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='s')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='t')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='u')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='v')
+    x = resnet50_identity_block(x, 3, [256, 256, 1024], stage=4, block='w')
+    f4 = x
+
+    x = resnet50_conv_block(x, 3, [512, 512, 2048], stage=5, block='a')
+    x = resnet50_identity_block(x, 3, [512, 512, 2048], stage=5, block='b')
+    x = resnet50_identity_block(x, 3, [512, 512, 2048], stage=5, block='c')
+    f5 = x
+
+    return img_input, [f1, f2, f3, f4, f5]
+
+
 def unet_encoder(**kwargs):
 
     input_height = kwargs['input_height']
