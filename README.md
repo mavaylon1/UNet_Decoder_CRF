@@ -32,3 +32,23 @@ From the cloned directory go to the src folder.
 - `make`
 
 If you run into issues with the CRF, refer to https://github.com/sadeepj/crfasrnn_keras and follow the demo.
+
+## Run on Cori GPUs
+### 1. Create a conda environment for keras-gpu
+Python 3.6 is tested and recommended for avoiding conflicts of dependencies.
+`conda create --name CRF_GPU_Env python=3.6`
+`conda activate CRF_GPU_Env`
+
+### 2. Clone the repository
+`git clone --recurse-submodules https://github.com//mavaylon1/LBNL_Segmentation_crf.git`
+
+### Install dependencies
+To run the pipeline using GPUs, users need to install keras-gpu, which includes keras, tensorflow along with cudnn libraries.  
+- `conda install -c anaconda keras-gpu`
+- `conda install tqdm`
+- `pip install numpy`
+- `conda install imgaug`
+- `conda install -c conda-forge opencv`
+- `conda install jupyter notebook`
+
+Note that Tensorflow 2.1.0 and Keras 2.3.1 are confirmed to work on Cori GPUs. One may need to specify the absolute path to the file "high_dim_filter.so" in certain configurations.
