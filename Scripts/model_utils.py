@@ -28,7 +28,11 @@ def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
         x = Activation("relu")(x)
         x = BatchNormalization()(x)
 
-    return x
+    if pool == True:
+        p = MaxPooling2D((2, 2))(x)
+        return [x, p]
+    else:
+        return x
 
 def unet_output_block(**kwargs):
     input = kwargs['input']

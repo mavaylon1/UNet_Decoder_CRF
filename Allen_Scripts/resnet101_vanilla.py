@@ -17,7 +17,7 @@ from decoder import *
 
 
 encoder=resnet101_encoder(input_height=256, input_width=256)
-model = resnet_unet_decoder(encoder=encoder, input_height=256, input_width=256, n_classes=3, filters=[2048, 1024, 512, 256, 64], depth=5, transpose=False, batch_norm_first= True, crfrnn_layer=False)
+model = resnet_unet_decoder(encoder=encoder, input_height=256, input_width=256, n_classes=3, filters=[2048, 1024, 512, 256, 64], transpose=False, batch_norm_first= True, crfrnn_layer=False)
 
 model.train(
     train_images =  "/home/maavaylon/Data1/train/img/",
