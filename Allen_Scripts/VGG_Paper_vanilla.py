@@ -93,7 +93,7 @@ score_final = Add()([score4, score_pool3c])
 upsample = Conv2DTranspose(n_classes, (16, 16), strides=8, name='upsample', use_bias=False)(score_final)
 upscore = Cropping2D(((44, 44), (44, 44)))(upsample)
 
-model= get_segmentation_model(img_input, output)
+model= get_segmentation_model(img_input, upscore)
 
 model.train(
     train_images =  "/home/maavaylon/Data1/train/img/",
