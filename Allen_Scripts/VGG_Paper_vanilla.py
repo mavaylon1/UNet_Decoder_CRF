@@ -92,14 +92,6 @@ score_final = Add()([score4, score_pool3c])
 # Final up-sampling and cropping
 upsample = Conv2DTranspose(n_classes, (16, 16), strides=8, name='upsample', use_bias=False)(score_final)
 upscore = Cropping2D(((44, 44), (44, 44)))(upsample)
-print(upscore.shape)
-output = CrfRnnLayer(image_dims=(height, width),
-                     num_classes=n_classes,
-                     theta_alpha=160.,
-                     theta_beta=3.,
-                     theta_gamma=3.,
-                     num_iterations=10,
-                     name='crfrnn')([upscore, img_input])
 
 model= get_segmentation_model(img_input, output)
 
