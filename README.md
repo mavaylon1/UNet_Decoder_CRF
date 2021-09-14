@@ -8,7 +8,7 @@ Conda is a great tool to import tools and create environments for projects. To a
 `conda activate CRF_CPU_Env`
 
 ### 2. Clone the repository
-`git clone --recurse-submodules https://github.com/mavaylon1/LBNL_Segmentation_crf.git`
+`git clone --recurse-submodules https://github.com/mavaylon1/UNet_Decoder_CRF.git`
 - The main branch is allen.
 
 ### 3. Install dependencies
