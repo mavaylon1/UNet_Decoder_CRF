@@ -1,6 +1,0 @@
-[submodule "image_segmentation_keras"]
-	path = image_segmentation_keras
-	url = https://github.com/mavaylon1/image_segmentation_keras.git
-[submodule "crfasrnn_keras"]
-	path = crfasrnn_keras
-	url = https://github.com/mavaylon1/crfasrnn_keras.git
