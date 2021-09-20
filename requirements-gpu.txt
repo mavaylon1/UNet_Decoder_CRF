@@ -1,0 +1,7 @@
+keras-gpu
+h5py
+opencv-python
+tqdm
+imageio>=2.5.0
+imgaug>=0.4.0
+Bumpy
