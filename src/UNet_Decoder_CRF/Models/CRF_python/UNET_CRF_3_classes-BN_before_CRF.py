@@ -8,9 +8,9 @@ from keras.layers import *
 from keras.models import Model
 from keras import layers
 from keras.layers.merge import concatenate
-import sys
-sys.path.insert(1, '../src')
-sys.path.insert(1, '../image_segmentation_keras')
+#import sys
+#sys.path.insert(1, '../src')
+#sys.path.insert(1, '../image_segmentation_keras')
 from keras_segmentation.models.config import IMAGE_ORDERING
 
 from keras_segmentation.models.model_utils import get_segmentation_model
