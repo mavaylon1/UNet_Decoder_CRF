@@ -19,7 +19,7 @@ setup(
       install_requires=[
             "h5py<=2.10.0",
             "Keras>-2.3.1",
-            "Tensorflow==2.2.0"
+            "Tensorflow==2.2.0",
             "imageio==2.5.0",
             "imgaug>=0.4.0",
             "opencv-python",
