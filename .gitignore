@@ -1,2 +1,10 @@
-# Ds.Store
+# DS.Store
 .DS_Store
+
+# setuptools
+/build/
+/dist/
+*.egg-info
+
+# Jupyter Notebook
+.ipynb_checkpoints
