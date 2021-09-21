@@ -15,7 +15,7 @@ setup(
       platforms=["Mac OS and Linux"],
       license="",
       url="",
-      packages=find_packages(),
+      packages=find_packages('src'),
       install_requires=[
             "h5py<=2.10.0",
             "Keras>-2.3.1",
