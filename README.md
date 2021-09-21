@@ -1,4 +1,4 @@
-# LBNL_Segmentation_crf
+# UNet_Decoder_CRF
 
 ## Setup
 ### 1. Create a conda environment 
