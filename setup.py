@@ -7,8 +7,8 @@ if '' not in sys.path:
     sys.path.insert(0, '')
 
 setup(
-      name="U_Dec",
-      version="0.2.0",
+      name="UNet_Decoder_CRF",
+      version="0.1.0",
       description="A package for semantic segmentation using CNNs and the CRF-RNN layer.",
       author="Matthew Avaylon",
       author_email='mavaylon@lbl.gov',
