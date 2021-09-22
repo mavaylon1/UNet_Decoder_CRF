@@ -1,4 +1,5 @@
-from model_utils import *
+from . import unet_conv_block
+
 from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
 

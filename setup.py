@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 # Some Python installations don't add the current directory to path.
 if '' not in sys.path:
     sys.path.insert(0, '')
-print(find_packages('src'))
+# print(find_packages('src'))
 setup(
       name="UNet_Decoder_CRF",
       version="0.1.0",
@@ -16,6 +16,7 @@ setup(
       license="",
       url="",
       packages=find_packages('src'),
+      package_dir={'': 'src'},
       install_requires=[
             "h5py<=2.10.0",
             "Keras>-2.3.1",
