@@ -19,11 +19,11 @@ setup(
       package_dir={'': 'src'},
       install_requires=[
             "h5py<=2.10.0",
-            "Keras>-2.3.1",
-            "Tensorflow==2.2.0",
-            "imageio==2.5.0",
-            "imgaug>=0.4.0",
+            "keras==2.3.1",
+            "tensorflow==2.2.0",
+            "imageio",
+            "imgaug",
             "opencv-python",
             "tqdm"],
-      python_requires=">=3.6"
+      python_requires="==3.7"
 )
