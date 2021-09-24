@@ -1,15 +1,9 @@
 from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
 from keras.models import *
-from keras.layers import *
-from keras import layers
-import sys
-from model_utils import *
-
-sys.path.insert(1, '../src')
-sys.path.insert(1, '../image_segmentation_keras')
-from keras_segmentation.models.model_utils import get_segmentation_model
-from crfrnn_layer import CrfRnnLayer
+from . import unet_conv_block
+from ..keras_segmentation.models.model_utils import get_segmentation_model
+from ..crf.crfrnn_layer import CrfRnnLayer
 
 """
     All decoders so far are based on UNET. There are different UNET decorders

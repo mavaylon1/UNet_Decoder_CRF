@@ -4,10 +4,6 @@ from keras.models import *
 from keras.layers import *
 from keras import layers
 
-from ..keras_segmentation.models.model_utils import get_segmentation_model
-# from crfrnn_layer import CrfRnnLayer
-
-
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
     if batch_norm_first == True:
         x = Conv2D(filters, 3, padding="same")(inputs)

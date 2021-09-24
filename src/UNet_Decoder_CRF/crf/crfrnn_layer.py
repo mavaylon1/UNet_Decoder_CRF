@@ -26,7 +26,7 @@ import numpy as np
 import tensorflow as tf
 from keras.engine.topology import Layer
 
-import high_dim_filter_loader
+from . import high_dim_filter_loader
 
 custom_module = high_dim_filter_loader.custom_module
 
