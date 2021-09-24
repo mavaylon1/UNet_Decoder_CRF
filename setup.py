@@ -25,5 +25,5 @@ setup(
             "imgaug",
             "opencv-python",
             "tqdm"],
-      python_requires="==3.7"
+      python_requires=">=3.7"
 )
