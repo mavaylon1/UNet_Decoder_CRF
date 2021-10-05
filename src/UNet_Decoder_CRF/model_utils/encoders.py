@@ -21,12 +21,10 @@ def resnet34_encoder(**kwargs):
     x = BatchNormalization(axis=bn_axis, name='bn_conv1')(x)
     x = Activation('relu')(x)
     x = MaxPooling2D((3, 3), strides=(2, 2))(x)
-    print(x.shape)
 
     x = resnet34_conv_block(x, 3, [64, 64], stage=2, block='a', strides=(1, 1))
     x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='b')
     x = resnet34_identity_block(x, 3, [64, 64], stage=2, block='c')
-    print(x.shape)
     f2 = one_side_pad(x)
 
 
@@ -35,7 +33,6 @@ def resnet34_encoder(**kwargs):
     x = resnet34_identity_block(x, 3, [128, 128], stage=3, block='c')
     x = resnet34_identity_block(x, 3, [128, 128], stage=3, block='d')
     f3 = x
-    print(x.shape)
 
     x = resnet34_conv_block(x, 3, [256, 256], stage=4, block='a')
     x = resnet34_identity_block(x, 3, [256, 256], stage=4, block='b')
@@ -77,12 +74,9 @@ def resnet50_encoder(**kwargs):
     x = resnet50_conv_block(x, 3, [64, 64, 256], stage=2, block='a', strides=(1, 1))
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='b')
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='c')
-    print(x.shape)
     f2 = one_side_pad(x)
-    print(x.shape)
 
     x = resnet50_conv_block(x, 3, [128, 128, 512], stage=3, block='a')
-    print(x.shape)
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='b')
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='c')
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='d')
@@ -128,9 +122,7 @@ def resnet101_encoder(**kwargs):
     x = resnet50_conv_block(x, 3, [64, 64, 256], stage=2, block='a', strides=(1, 1))
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='b')
     x = resnet50_identity_block(x, 3, [64, 64, 256], stage=2, block='c')
-    print(x.shape)
     f2 = one_side_pad(x)
-    print(x.shape)
 
     x = resnet50_conv_block(x, 3, [128, 128, 512], stage=3, block='a')
     x = resnet50_identity_block(x, 3, [128, 128, 512], stage=3, block='b')
@@ -176,13 +168,15 @@ def unet_encoder(**kwargs):
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
     filters = kwargs['filters']
-    depth = len(filters)
     channels = kwargs['channels']
     batch_norm_first = kwargs['batch_norm_first']
+
+    assert input_height % 32 == 0
+    assert input_width % 32 == 0
+
     pool = True
     filters = filters[::-1]
-    # assert input_height % 32 == 0
-    # assert input_width % 32 == 0
+    depth = len(filters)
 
     img_input = Input(shape=(input_height,input_width, channels))
 
@@ -195,10 +189,8 @@ def unet_encoder(**kwargs):
             x = unet_conv_block(x, filters[i], pool, batch_norm_first)
             concat_layers.append(x[0])
             x=x[1]
-            # print(x.shape)
         else:
             x = unet_conv_block(x, filters[i], pool, batch_norm_first)
-            # print(x[1].shape)
             concat_layers.extend(x)
 
     return img_input, concat_layers
