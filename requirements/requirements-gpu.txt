@@ -1,6 +1,4 @@
-keras-gpu
 h5py<=2.10.0
-tensorflow==2.2.0
 imageio
 imgaug
 opencv-python
