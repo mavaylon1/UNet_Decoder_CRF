@@ -6,9 +6,16 @@ from .data_utils.data_loader import image_segmentation_generator, \
 import six
 from keras.callbacks import Callback
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.keras import backend as K
 import tensorflow as tf
 import glob
 import sys
+
+def iou(y_true, y_pred):
+    intersection = K.sum(y_true * y_pred)
+    sum_ = K.sum(y_true + y_pred)
+    jac = (intersection + smooth) / (sum_ - intersection + smooth)
+    return jac
 
 def find_latest_checkpoint(checkpoints_path, fail_safe=True):
 
@@ -66,11 +73,11 @@ def train(model,
           verify_dataset=True,
           checkpoints_path=None,
           epochs=5,
-          batch_size=2,
+          batch_size=1,
           validate=False,
           val_images=None,
           val_annotations=None,
-          val_batch_size=2,
+          val_batch_size=1,
           auto_resume_checkpoint=False,
           load_weights=None,
           steps_per_epoch=512,
@@ -108,7 +115,7 @@ def train(model,
 
         model.compile(loss=loss_k,
                       optimizer=optimizer_name,
-                      metrics=['accuracy'])
+                      metrics=[iou])
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
