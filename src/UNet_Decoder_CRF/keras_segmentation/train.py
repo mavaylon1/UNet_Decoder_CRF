@@ -12,13 +12,20 @@ import glob
 import sys
 
 def dice_coef(y_true, y_pred):
-    y_truef=K.flatten(y_true)
-    y_predf=K.flatten(y_pred)
-    And=K.sum(y_truef* y_predf)
-    return((2* And + smooth) / (K.sum(y_truef) + K.sum(y_predf) + smooth))
+
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + K.epsilon()) / (K.sum(y_true_f) + K.sum(y_pred_f) + K.epsilon())
 
 def dice_coef_loss(y_true, y_pred):
-    return -dice_coef(y_true, y_pred)
+    return 1-dice_coef(y_true, y_pred)
+
+def soft_dice_loss(y_true, y_pred, axis=(1, 2, 3)):
+    dice_numerator = 2. * K.sum(y_true * y_pred, axis=axis) + 0.00001
+    dice_denominator = K.sum(y_true ** 2, axis=axis) + K.sum(y_pred ** 2, axis=axis) + 0.00001
+    dice_loss = 1 - K.mean((dice_numerator) / (dice_denominator))
+    return dice_loss
 
 def iou(y_true, y_pred):
     intersection = K.sum(y_true * y_pred)
@@ -124,7 +131,7 @@ def train(model,
 
         model.compile(loss=loss_k,
                       optimizer=optimizer_name,
-                      metrics=[tf.keras.metrics.MeanIoU(num_classes=2)])
+                      metrics=[dice_coef])
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
