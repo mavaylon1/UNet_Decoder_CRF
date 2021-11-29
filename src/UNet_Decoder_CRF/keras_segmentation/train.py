@@ -11,6 +11,15 @@ import tensorflow as tf
 import glob
 import sys
 
+def dice_coef(y_true, y_pred):
+    y_truef=K.flatten(y_true)
+    y_predf=K.flatten(y_pred)
+    And=K.sum(y_truef* y_predf)
+    return((2* And + smooth) / (K.sum(y_truef) + K.sum(y_predf) + smooth))
+
+def dice_coef_loss(y_true, y_pred):
+    return -dice_coef(y_true, y_pred)
+
 def iou(y_true, y_pred):
     intersection = K.sum(y_true * y_pred)
     sum_ = K.sum(y_true + y_pred)
@@ -113,7 +122,7 @@ def train(model,
         else:
             loss_k = 'categorical_crossentropy'
 
-        model.compile(loss=loss_k,
+        model.compile(loss=dice_coef_loss,
                       optimizer=optimizer_name,
                       metrics=[iou, 'accuracy'])
 
