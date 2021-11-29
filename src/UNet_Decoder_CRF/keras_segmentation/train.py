@@ -11,6 +11,7 @@ import tensorflow as tf
 import glob
 import sys
 
+smooth=1
 def dice_coef(y_true, y_pred):
 
     y_true_f = K.flatten(y_true)
