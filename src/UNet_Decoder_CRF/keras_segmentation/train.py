@@ -129,9 +129,9 @@ def train(model,
         else:
             loss_k = 'categorical_crossentropy'
 
-        model.compile(loss=soft_dice_loss,
+        model.compile(loss=loss_k,
                       optimizer=optimizer_name,
-                      metrics=[dice_coef])
+                      metrics=[iou])
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
