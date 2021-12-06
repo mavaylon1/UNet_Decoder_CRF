@@ -15,8 +15,8 @@ model = unet_decoder(encoder=encoder, input_height=input_height, input_width=inp
                      transpose=False, batch_norm_first=batch_norm_first, crfrnn_layer=False)
 
 model.train(
-    train_images = "/home/maavaylon/ceramic_1280/halfres_original/",
-    train_annotations = "/home/maavaylon/ceramic_1280/halfres_2labels_ground/",
+    train_images = "/home/maavaylon/ceramic_1280_png/halfres_original/",
+    train_annotations = "/home/maavaylon/ceramic_1280_png/halfres_2labels_ground/",
     epochs=10000,
-    steps_per_epoch=len(glob("/home/maavaylon/ceramic_1280/halfres_original/*")),
+    steps_per_epoch=len(glob("/home/maavaylon/ceramic_1280_png/halfres_original/*")),
     batch_size=1)
