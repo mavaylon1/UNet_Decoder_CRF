@@ -132,7 +132,7 @@ def train(model,
 
         model.compile(loss=loss_k,
                       optimizer=optimizer_name,
-                      metrics=[iou])
+                      metrics=[iou, 'accuracy'])
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
@@ -194,7 +194,7 @@ def train(model,
             preprocessing=preprocessing, read_image_type=read_image_type)
 
     callbacks = [
-#        ModelCheckpoint("pet_class_crf.h5", verbose=1, save_best_only=True, save_weights_only=True,monitor='val_accuracy'),
+       ModelCheckpoint("pet_class_crf.h5", verbose=1, save_best_only=True, save_weights_only=True,monitor='val_accuracy'),
  #       EarlyStopping(monitor="accuracy", mode='max', min_delta=.005, patience=5, verbose=1)
     ]
     print('fit')
