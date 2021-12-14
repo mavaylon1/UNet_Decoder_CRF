@@ -6,11 +6,12 @@ from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
 def resnet34_encoder(**kwargs):
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
+    channels = kwargs['channels']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0
 
-    img_input = Input(shape=(input_height, input_width, 3))
+    img_input = Input(shape=(input_height, input_width, channels))
 
     bn_axis = 3
 
@@ -53,11 +54,12 @@ def resnet50_encoder(**kwargs):
 
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
+    channels = kwargs['channels']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0
 
-    img_input = Input(shape=(input_height, input_width, 3))
+    img_input = Input(shape=(input_height, input_width, channels))
 
     bn_axis = 3
 
@@ -101,11 +103,12 @@ def resnet101_encoder(**kwargs):
 
     input_height = kwargs['input_height']
     input_width = kwargs['input_width']
+    channels = kwargs['channels']
 
     assert input_height % 32 == 0
     assert input_width % 32 == 0
 
-    img_input = Input(shape=(input_height, input_width, 3))
+    img_input = Input(shape=(input_height, input_width, channels))
 
     bn_axis = 3
 

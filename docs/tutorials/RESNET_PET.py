@@ -9,7 +9,7 @@ batch_norm_first = True
 n_classes = 3
 decoder_filters=[2048, 1024, 512, 256, 64]
 
-encoder = resnet50_encoder(input_height=input_height, input_width=input_width)
+encoder = resnet50_encoder(input_height=input_height, input_width=input_width, channels=3)
 model = unet_decoder(encoder=encoder, input_height=input_height, input_width=input_width, n_classes=n_classes, filters=decoder_filters, model='resnet',
                      transpose=False, batch_norm_first=batch_norm_first, crfrnn_layer=False)
 
