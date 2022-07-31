@@ -29,8 +29,8 @@ class_colors = [(random.randint(0, 255), random.randint(
     0, 255), random.randint(0, 255)) for _ in range(5000)]
 
 
-ACCEPTABLE_IMAGE_FORMATS = [".jpg", ".jpeg", ".png", ".bmp"]
-ACCEPTABLE_SEGMENTATION_FORMATS = [".png", ".bmp"]
+ACCEPTABLE_IMAGE_FORMATS = [".jpg", ".jpeg", ".png", ".bmp",".tif"]
+ACCEPTABLE_SEGMENTATION_FORMATS = [".png", ".bmp", ".tif"]
 
 
 class DataLoaderError(Exception):

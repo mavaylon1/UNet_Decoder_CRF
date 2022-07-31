@@ -1,8 +1,7 @@
-from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
-from keras.models import *
-from keras.layers import *
-from keras import layers
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import *
 
 def unet_conv_block(inputs, filters, pool=True, batch_norm_first=True):
     if batch_norm_first == True:

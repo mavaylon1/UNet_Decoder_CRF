@@ -17,16 +17,16 @@ model = unet_decoder(encoder=encoder, input_height=input_height, input_width=inp
 #model.load_weights('/Users/mavaylon/Research/pet_weights/UNET_CRF_PET/unet87.94pet_class_crf.h5')
 
 model.train(
-    train_images = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/img/",
-    train_annotations = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/ann/",
+    train_images = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/",
+    train_annotations = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/ann/",
     epochs=10,
-    steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/ann/*")),
+    steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/*")),
     batch_size=1,
     verify_dataset=False,
     do_augment=True,
     validate=True,
-    val_images="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/img/",
-    val_annotations="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/ann/",
+    val_images="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/",
+    val_annotations="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/ann/*"))
+    val_steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/*"))
 )

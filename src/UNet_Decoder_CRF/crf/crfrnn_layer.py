@@ -60,6 +60,24 @@ class CrfRnnLayer(Layer):
         self.bilateral_ker_weights = None
         self.compatibility_matrix = None
         super(CrfRnnLayer, self).__init__(**kwargs)
+    
+    def get_config(self):
+
+        config = super().get_config().copy()
+        config.update({
+            'image_dims': self.image_dims,
+            'num_classes': self.num_classes,
+            'theta_alpha': self.theta_alpha,
+            'theta_beta': self.theta_beta,
+            'theta_gamma': self.theta_gamma,
+            'num_iterations': self.num_iterations,
+            'spatial_ker_weights': self.spatial_ker_weights,
+            'bilateral_ker_weights': self.bilateral_ker_weights,
+            'compatibility_matrix': self.compatibility_matrix
+            
+        })
+        return config
+
 
     def build(self, input_shape):
         # Weights of the spatial kernel

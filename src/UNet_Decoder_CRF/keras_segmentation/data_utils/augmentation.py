@@ -13,6 +13,15 @@ IMAGE_AUGMENTATION_NUM_TRIES = 10
 
 loaded_augmentation_name = ""
 
+def _load_fiber_aug():
+    return iaa.OneOf(
+        [iaa.Affine(
+            mode='constant',
+            cval=(0, 255),
+            rotate=(-36,36), 
+            translate_percent={"x": (-0.05, 0.05), "y": (-0.05, 0.05)}, 
+            shear=(-.05,.05), scale={"x": (.95, 1.95), "y": (.95,1.95)}),
+        iaa.Sequential([iaa.Fliplr(0.5), iaa.Flipud(0.2)])])
 
 def _load_augmentation_aug_geometric():
     return iaa.OneOf([
@@ -181,6 +190,7 @@ def _load_augmentation_aug_all():
 
 
 augmentation_functions = {
+    "aug_fiber": _load_fiber_aug,
     "aug_all": _load_augmentation_aug_all,
     "aug_all2": _load_augmentation_aug_all2,
     "aug_geometric": _load_augmentation_aug_geometric,

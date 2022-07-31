@@ -4,9 +4,10 @@ import os
 from .data_utils.data_loader import image_segmentation_generator, \
     verify_segmentation_dataset
 import six
-from keras.callbacks import Callback
-from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.callbacks import Callback 
+from keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
 from keras import backend as K
+from tqdm.keras import TqdmCallback
 import tensorflow as tf
 import glob
 import sys
@@ -103,7 +104,7 @@ def train(model,
           ignore_zero_class=False,
           optimizer_name='adam',
           do_augment=False,
-          augmentation_name="aug_all",
+          augmentation_name="aug_fiber",
           callbacks=None,
           custom_augmentation=None,
           other_inputs_paths=None,
@@ -132,7 +133,7 @@ def train(model,
 
         model.compile(loss=loss_k,
                       optimizer=optimizer_name,
-                      metrics=[iou, 'accuracy'])
+                      metrics=[dice_coef, 'accuracy'])
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
@@ -177,7 +178,7 @@ def train(model,
             verified = verify_segmentation_dataset(val_images,
                                                    val_annotations,
                                                    n_classes)
-            assert verified
+            # assert verified
 
     train_gen = image_segmentation_generator(
         train_images, train_annotations,  batch_size,  n_classes,
@@ -194,14 +195,16 @@ def train(model,
             preprocessing=preprocessing, read_image_type=read_image_type)
 
     callbacks = [
-       ModelCheckpoint("pet_class_crf.h5", verbose=1, save_best_only=True, save_weights_only=True,monitor='val_accuracy'),
- #       EarlyStopping(monitor="accuracy", mode='max', min_delta=.005, patience=5, verbose=1)
+       ModelCheckpoint("unet_crf_fiber.h5", verbose=1, save_best_only=True, save_weights_only=True, monitor='val_dice_coef'), 
+        # EarlyStopping(monitor="dice", mode='max', min_delta=.005, patience=5, verbose=1),
+        CSVLogger(filename='unet_crf_fiber.csv', separator=",", append=False),
+        TqdmCallback(verbose=2)
     ]
     print('fit')
 
     if not validate:
         model.fit(train_gen, steps_per_epoch=steps_per_epoch,
-                  epochs=epochs, callbacks=callbacks, initial_epoch=initial_epoch)
+                  epochs=epochs, callbacks=callbacks, initial_epoch=initial_epoch,)
     else:
         model.fit(train_gen,
                   steps_per_epoch=steps_per_epoch,
