@@ -18,7 +18,6 @@ setup(
       packages=find_packages('src'),
       package_dir={'': 'src'},
       install_requires=[
-            "h5py<=2.10.0",
             "imageio",
             "imgaug",
             "opencv-python",

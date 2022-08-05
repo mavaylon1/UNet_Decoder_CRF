@@ -1,7 +1,7 @@
-from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
-from keras.models import *
-from keras.layers.merge import concatenate
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import concatenate
 
 from . import unet_conv_block, unet_output_block
 from ..keras_segmentation.models.model_utils import get_segmentation_model

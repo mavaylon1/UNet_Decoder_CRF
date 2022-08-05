@@ -4,9 +4,8 @@ import os
 from .data_utils.data_loader import image_segmentation_generator, \
     verify_segmentation_dataset
 import six
-from keras.callbacks import Callback 
-from keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
-from keras import backend as K
+from tensorflow.keras.callbacks import Callback, ModelCheckpoint, EarlyStopping, CSVLogger
+from tensorflow.keras import backend as K
 from tqdm.keras import TqdmCallback
 import tensorflow as tf
 import glob

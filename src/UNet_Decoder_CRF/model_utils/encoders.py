@@ -1,6 +1,6 @@
 from . import unet_conv_block, resnet50_identity_block, resnet50_conv_block, one_side_pad, resnet34_identity_block, resnet34_conv_block
 
-from keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Input, ZeroPadding2D, \
     Dropout, Conv2DTranspose, Cropping2D, Add, UpSampling2D, BatchNormalization, Activation
 
 def resnet34_encoder(**kwargs):

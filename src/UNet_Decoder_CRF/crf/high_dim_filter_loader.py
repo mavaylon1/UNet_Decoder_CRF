@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 import tensorflow as tf
 from tensorflow.python.framework import ops
-custom_module = tf.load_op_library('/global/homes/m/mavaylon/UNet_Decoder_CRF/src/UNet_Decoder_CRF/crf/cpp/high_dim_filter.so')
+custom_module = tf.load_op_library('/global/u1/m/mavaylon/PM_UNET/UNet_Decoder_CRF/src/UNet_Decoder_CRF/crf/cpp/high_dim_filter.so')
 
 @ops.RegisterGradient('HighDimFilter')
 def _high_dim_filter_grad(op, grad):

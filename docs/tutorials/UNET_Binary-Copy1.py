@@ -17,16 +17,16 @@ model = unet_decoder(encoder=encoder, input_height=input_height, input_width=inp
 #model.load_weights('/Users/mavaylon/Research/pet_weights/UNET_CRF_PET/unet87.94pet_class_crf.h5')
 
 model.train(
-    train_images = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/",
-    train_annotations = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/ann/",
+    train_images = "/pscratch/sd/m/mavaylon/Fiber/Half/first/img/",
+    train_annotations = "/pscratch/sd/m/mavaylon/Fiber/Half/first/ann/",
     epochs=10,
-    steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/*")),
+    steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Half/first/img/*")),
     batch_size=1,
     verify_dataset=False,
     do_augment=True,
     validate=True,
-    val_images="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/",
-    val_annotations="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/ann/",
+    val_images="/pscratch/sd/m/mavaylon/Fiber/Val/half/img/",
+    val_annotations="/pscratch/sd/m/mavaylon/Fiber/Val/half/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/dummy_data/img/*"))
+    val_steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Val/half/*"))
 )
