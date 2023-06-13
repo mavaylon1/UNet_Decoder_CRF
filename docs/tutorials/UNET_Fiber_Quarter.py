@@ -17,17 +17,17 @@ model = unet_decoder(encoder=encoder, input_height=input_height, input_width=inp
 # model.load_weights('/global/homes/m/mavaylon/PM_UNET/UNet_Decoder_CRF/docs/tutorials/unet_non_crf__quarter_fiber_2_run.h5')
 
 model.train(
-    train_images = "/pscratch/sd/m/mavaylon/Fiber/Quarter/train/img/",
-    train_annotations = "/pscratch/sd/m/mavaylon/Fiber/Quarter/train/ann/",
+    train_images = "/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/train/img/",
+    train_annotations = "/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/train/ann/",
     data_size='non_crf_quarter',
     epochs=10,
-    steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Quarter/train/img/*")),
+    steps_per_epoch=len(glob("/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/train/img/*")),
     batch_size=1,
     verify_dataset=False,
     do_augment=True,
     validate=True,
-    val_images="/pscratch/sd/m/mavaylon/Fiber/Quarter/val/img/",
-    val_annotations="/pscratch/sd/m/mavaylon/Fiber/Quarter/val/ann/",
+    val_images="/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/val/img/",
+    val_annotations="/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/val/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Quarter/val/img/*"))
+    val_steps_per_epoch=len(glob("/global/cfs/projectdirs/m636/Vis4ML/Fiber/Quarter/val/img/*"))
 )
