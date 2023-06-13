@@ -17,7 +17,7 @@ def dice_coef(y_true, y_pred):
     y_true_f = K.flatten(y_true)
     y_pred_f = K.flatten(y_pred)
     intersection = K.sum(y_true_f * y_pred_f)
-    return (2. * intersection + K.epsilon()) / (K.sum(y_true_f) + K.sum(y_pred_f) + K.epsilon())
+    return ((2. * intersection + K.epsilon()) / (K.sum(y_true_f) + K.sum(y_pred_f) + K.epsilon()))
 
 def dice_coef_loss(y_true, y_pred):
     return 1-dice_coef(y_true, y_pred)
@@ -87,6 +87,7 @@ def train(model,
           input_height=None,
           input_width=None,
           n_classes=None,
+          data_size=None,
           verify_dataset=True,
           checkpoints_path=None,
           epochs=5,
@@ -194,9 +195,9 @@ def train(model,
             preprocessing=preprocessing, read_image_type=read_image_type)
 
     callbacks = [
-       ModelCheckpoint("unet_crf_fiber.h5", verbose=1, save_best_only=True, save_weights_only=True, monitor='val_dice_coef'), 
-        # EarlyStopping(monitor="dice", mode='max', min_delta=.005, patience=5, verbose=1),
-        CSVLogger(filename='unet_crf_fiber.csv', separator=",", append=False),
+       ModelCheckpoint("unet_crf_"+data_size+"_fiber.h5", verbose=1, save_best_only=True, save_weights_only=True, monitor='val_dice_coef'), 
+        EarlyStopping(monitor="dice", mode='max', min_delta=.005, patience=5, verbose=1),
+        CSVLogger(filename="unet_"+data_size+"_fiber.csv", separator=",", append=True),
         TqdmCallback(verbose=2)
     ]
     print('fit')

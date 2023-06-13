@@ -14,19 +14,22 @@ encoder = unet_encoder(input_height=input_height, input_width=input_width, filte
 model = unet_decoder(encoder=encoder, input_height=input_height, input_width=input_width, n_classes=n_classes, filters=decoder_filters, model='unet',
                      transpose=False, batch_norm_first=batch_norm_first, crfrnn_layer=True)
 
-#model.load_weights('/Users/mavaylon/Research/pet_weights/UNET_CRF_PET/unet87.94pet_class_crf.h5')
+# model.load_weights('/global/homes/m/mavaylon/PM_UNET/UNet_Decoder_CRF/docs/tutorials/unet_crf_full_non_crf_fiber.h5')
 
 model.train(
-    train_images = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/img/",
-    train_annotations = "/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/ann/",
+    train_images = "/pscratch/sd/m/mavaylon/Fiber/Full/full/train/img/",
+    train_annotations = "/pscratch/sd/m/mavaylon/Fiber/Full/full/train/ann/",
+    data_size='full_non_crf',
     epochs=10,
-    steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_train/half_sets/first/ann/*")),
+    steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Full/full/train/img/*")),
     batch_size=1,
     verify_dataset=False,
     do_augment=True,
     validate=True,
-    val_images="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/img/",
-    val_annotations="/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/ann/",
+    val_images="/pscratch/sd/m/mavaylon/Fiber/Full/full/val/img/",
+    val_annotations="/pscratch/sd/m/mavaylon/Fiber/Full/full/val/ann/",
     val_batch_size=1,
-    val_steps_per_epoch=len(glob("/global/cscratch1/sd/tpercian/NatureReportsData/Experiments1/matt_val/half/ann/*"))
+    val_steps_per_epoch=len(glob("/pscratch/sd/m/mavaylon/Fiber/Full/full/val/img/*"))
 )
+
+# print(model.evaluate_segmentation(inp_images_dir="/pscratch/sd/m/mavaylon/Fiber/Fake_Test/img/", annotations_dir="/pscratch/sd/m/mavaylon/Fiber/Fake_Test/ann/"))
