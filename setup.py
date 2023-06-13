@@ -18,6 +18,8 @@ setup(
       packages=find_packages('src'),
       package_dir={'': 'src'},
       install_requires=[
+            "scipy==1.9.2"
+            "numpy==1.19.2"
             "imageio",
             "imgaug",
             "opencv-python",
