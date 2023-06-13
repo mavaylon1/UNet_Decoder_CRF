@@ -9,6 +9,8 @@ Conda is a great tool to import tools and create environments for projects. To a
 
 ### 2. Clone the repository
 `git clone --recurse-submodules https://github.com/mavaylon1/UNet_Decoder_CRF.git`
+`pip install -e .`
+`pip install protobuf==3.20.*`
 
 ### 3. Install cudatoolkit and cudnn via conda 
 In the current state, if users want to use GPU for training their models, users need to install the following cudatoolkit and cudnn versions.
