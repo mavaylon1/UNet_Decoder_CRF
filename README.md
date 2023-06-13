@@ -8,7 +8,7 @@ Conda is a great tool to import tools and create environments for projects. To a
 `conda activate CRF_CPU_Env`
 
 ### 2. Clone the repository
-- `git clone --recurse-submodules https://github.com/mavaylon1/UNet_Decoder_CRF.git`
+- `git clone https://github.com/mavaylon1/UNet_Decoder_CRF.git`
 - `pip install -e .`
 - `-pip install protobuf==3.20.*`
 
